@@ -1,0 +1,83 @@
+version: '3'
+services:
+  server:
+    command: "npm run start:ea:app"
+    environment:
+      NODE_ENV: production
+      API_PROTOCOL: http
+      API_HOST: ${ENV_NAME}_api_1
+      API_PORT: 3000
+      HOST_IP: ${ENV_IP}
+      ADM_PROXY_PROTOCOL: http
+      ADM_PROXY_HOST: ${ENV_IP}
+      ADM_PROXY_PORT: ${ENV_PROXY_PORT_1}
+      ADM_API_PROTOCOL: http
+      ADM_API_HOST: ${ENV_NAME}_api_1
+      ADM_API_PORT: 3000
+      FIRST_PROXY_PORT: ${ENV_PROXY_PORT}
+      NO_WILDCARDS: "true"
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
+    ports:
+      - "${ENV_ADM_PORT}:5000"
+      - "${ENV_PROXY_PORT_1}:1500"
+      - "${ENV_PROXY_PORT}:${ENV_PROXY_PORT}"
+    volumes:
+      - "./logs/server/:/usr/src/app/packages/server/logs"
+
+  api:
+    command: "npm run start -- --hostName=${ENV_NAME}_api_1"
+    depends_on:
+      - postgres
+    environment:
+      FIRST_USER_EMAIL: ${FIRST_USER_EMAIL}
+      FIRST_USER_USERNAME: ${FIRST_USER_USERNAME}
+      FIRST_USER_PASSWORD: ${FIRST_USER_PASSWORD}
+      DATABASE_USERNAME: postgresUser
+      DATABASE_PASSWORD: postgresPass
+      DATABASE_HOST: ${ENV_NAME}_postgres_1
+      DATABASE_PORT: 5432
+      DATABASE_NAME: awx365API
+      MQTT_BROKER_PROTOCOL: mqtt
+      MQTT_BROKER_HOST: mqttbroker
+      MQTT_BROKER_PORT: 1883
+      PROXY_HOST_PROTOCOL: http
+      PROXY_HOST: server
+      PROXY_PORT: 1500
+      NOTIFICATION_EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      NOTIFICATION_EMAIL_FROM_ADDRESS: ${EMAIL_FROM_ADDRESS}
+      NOTIFICATION_EMAIL_USER: ${EMAIL_USER}
+      NOTIFICATION_EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+    volumes:
+      - "./storage/datasources/:/usr/src/app/packages/api/storage/datasources"
+      - "./logs/api/:/usr/src/app/packages/api/logs"
+
+  postgres:
+    restart: always
+    environment:
+      POSTGRES_USER: postgresUser
+      POSTGRES_DB: awx365API
+    volumes:
+      - "./shared/:/home/shared/"
+      - ea-data-prod:/var/lib/postgresql/data
+      
+  mqttbroker:
+    image: eclipse-mosquitto:latest
+    restart: always
+
+  worker:
+    image: xplus.azurecr.io/${ENV_VERSION}/ea_worker:latest
+    depends_on:
+      - mqttbroker
+      - server
+    command: "npm run start:ea:worker"
+    environment:
+      MQTT_BROKER_HOST: ${ENV_NAME}_mqttbroker_1
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
+    volumes:
+      - "./log/worker/:/usr/src/app/packages/worker/logs"
+
+volumes:
+  ea-data-prod:
+    external: true

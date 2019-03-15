@@ -1,0 +1,40 @@
+version: '3'
+services:
+  server:
+    image: xplus.azurecr.io/${ENV_VERSION}/ea_app:latest
+    environment:
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
+    networks:
+      - ea-network
+
+  api:
+    image: xplus.azurecr.io/${ENV_VERSION}/ea_api:latest
+    environment:
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
+    networks:
+      - ea-network
+
+  postgres:
+    image: xplus.azurecr.io/${ENV_VERSION}/ea_postgres:latest
+    networks:
+      - ea-network
+      
+  mqttbroker:
+    image: eclipse-mosquitto:latest
+    networks:
+      - ea-network
+
+  worker:
+    image: xplus.azurecr.io/${ENV_VERSION}/ea_worker:latest
+    environment:
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
+    networks:
+      - ea-network
+  
+networks:
+  ea-network:
+    external:
+      name: ea-net
