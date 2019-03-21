@@ -59,7 +59,7 @@ services:
       POSTGRES_DB: awx365API
     volumes:
       - "./shared/:/home/shared/"
-      - ea-data-prod:/var/lib/postgresql/data
+      - ea-data-<env_name>:/var/lib/postgresql/data
       
   mqttbroker:
     image: eclipse-mosquitto:latest
@@ -79,5 +79,5 @@ services:
       - "./log/worker/:/usr/src/app/packages/worker/logs"
 
 volumes:
-  ea-data-prod:
+  ea-data-<env_name>:
     external: true

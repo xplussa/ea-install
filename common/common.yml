@@ -1,7 +1,7 @@
 version: '3'
 services:
   server:
-    image: xpluseaprod.azurecr.io/${ENV_VERSION}/ea_app:latest
+    image: ${DR_SERVER}.azurecr.io/${ENV_VERSION}/ea_app:latest
     environment:
       AZURE_MONITOR_PREFIX: ${ENV_NAME}
       AZURE_MONITOR_IKEY: S{AM_IKEY}
@@ -9,7 +9,7 @@ services:
       - ea-network
 
   api:
-    image: xpluseaprod.azurecr.io/${ENV_VERSION}/ea_api:latest
+    image: ${DR_SERVER}.azurecr.io/${ENV_VERSION}/ea_api:latest
     environment:
       AZURE_MONITOR_PREFIX: ${ENV_NAME}
       AZURE_MONITOR_IKEY: S{AM_IKEY}
@@ -17,7 +17,7 @@ services:
       - ea-network
 
   postgres:
-    image: xpluseaprod.azurecr.io/${ENV_VERSION}/ea_postgres:latest
+    image: ${DR_SERVER}.azurecr.io/${ENV_VERSION}/ea_postgres:latest
     networks:
       - ea-network
       
@@ -27,7 +27,7 @@ services:
       - ea-network
 
   worker:
-    image: xpluseaprod.azurecr.io/${ENV_VERSION}/ea_worker:latest
+    image: ${DR_SERVER}.azurecr.io/${ENV_VERSION}/ea_worker:latest
     environment:
       AZURE_MONITOR_PREFIX: ${ENV_NAME}
       AZURE_MONITOR_IKEY: S{AM_IKEY}
