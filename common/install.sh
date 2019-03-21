@@ -3,7 +3,7 @@
 copyStartFile () {
 	if [ ! -d "../instances/$1/" ]; then
 		mkdir ../instances/$1
-		cp -a ./deploy-example/. ../instances/$1/
+		cp -a ./source/. ../instances/$1/
 		sed -i "s/<env_name>/$1/g" ../instances/$1/.env
 		sed -i "s/<env_name>/$1/g" ../instances/$1/docker-compose.yml
 		echo "Instance \"$1\" create!"
