@@ -32,5 +32,4 @@ case $key in
 esac
 done
 set -- "${POSITIONAL[@]}" 
-echo "$env_proxy_port $env_ip $env_adm_port $env_proxy_port"
 
