@@ -10,7 +10,7 @@ services:
       HOST_IP: ${ENV_IP}
       ADM_PROXY_PROTOCOL: http
       ADM_PROXY_HOST: ${ENV_IP}
-      ADM_PROXY_PORT: ${ENV_PROXY_PORT_1}
+      ADM_PROXY_PORT: 1500
       ADM_API_PROTOCOL: http
       ADM_API_HOST: ${ENV_NAME}_api_1
       ADM_API_PORT: 3000
@@ -20,7 +20,6 @@ services:
       AZURE_MONITOR_IKEY: S{AM_IKEY}
     ports:
       - "${ENV_ADM_PORT}:5000"
-      - "${ENV_PROXY_PORT_1}:1500"
       - "${ENV_PROXY_PORT}:${ENV_PROXY_PORT}"
     volumes:
       - "./logs/server/:/usr/src/app/packages/server/logs"
