@@ -47,6 +47,8 @@ services:
       NOTIFICATION_EMAIL_FROM_ADDRESS: ${EMAIL_FROM_ADDRESS}
       NOTIFICATION_EMAIL_USER: ${EMAIL_USER}
       NOTIFICATION_EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      AZURE_MONITOR_PREFIX: ${ENV_NAME}
+      AZURE_MONITOR_IKEY: S{AM_IKEY}
     volumes:
       - "./storage/datasources/:/usr/src/app/packages/api/storage/datasources"
       - "./logs/api/:/usr/src/app/packages/api/logs"
@@ -73,7 +75,7 @@ services:
     environment:
       MQTT_BROKER_HOST: ${ENV_NAME}_mqttbroker_1
       AZURE_MONITOR_PREFIX: ${ENV_NAME}
-      AZURE_MONITOR_IKEY: S{AM_IKEY}
+      AZURE_MONITOR_IKEY: ${AM_IKEY}
     volumes:
       - "./log/worker/:/usr/src/app/packages/worker/logs"
 
